@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html ng-app="app">
+<head>
+    <title>Ancestor Trek</title>
+    <link href="foundation.css" rel="stylesheet">
+</head>
+<body>
+    <h1>Welcome to Ancestor Trek</h1>
+
+    <div ng-controller="Auth as auth">
+        <a href="https://sandbox.familysearch.org/cis-web/oauth2/v3/authorization?response_type=code&client_id=WCQY-7J1Q-GKVV-7DNM-SQ5M-9Q5H-JX3H-CMJK&redirect_uri=http://localhost:8080"
+                class="button"
+                ng-if="!auth.hasToken()">
+            Login with FamilySearch
+        </a>
+
+        <button class="alert"
+                ng-if="auth.hasToken()"
+                ng-click="auth.logout()">
+            Logout
+        </button>
+    </div>
+
+    <script src="angular.js"></script>
+    <script src="angular-cookies.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
