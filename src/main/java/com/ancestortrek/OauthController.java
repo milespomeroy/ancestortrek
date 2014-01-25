@@ -12,9 +12,10 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 @RestController
+@RequestMapping("oauth")
 public class OauthController {
 
-    @RequestMapping("/oauth")
+    @RequestMapping
     public void redirect(
             @RequestParam(value = "code", required = false) String code,
             HttpServletResponse response
@@ -39,6 +40,20 @@ public class OauthController {
 
         response.addCookie(tokenCookie); // TODO: setSecure
         response.sendRedirect("/");
+    }
+
+    @RequestMapping("token")
+    public TokenResponse getToken(String code) {
+        MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
+        map.add("grant_type", "authorization_code");
+        map.add("client_id", "WCQY-7J1Q-GKVV-7DNM-SQ5M-9Q5H-JX3H-CMJK");
+        map.add("code", code);
+
+        RestTemplate restTemplate = new RestTemplate();
+        return restTemplate.postForObject(
+                "https://sandbox.familysearch.org/cis-web/oauth2/v3/token",
+                map,
+                TokenResponse.class);
     }
 
 }

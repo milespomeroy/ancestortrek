@@ -24,10 +24,13 @@ function Auth($cookies, $window, $http) {
 
         if(code) {
             console.log('has code');
-            // TODO: get auth token (from my server) and set cookie
-            $cookies.fs_token = 'blah';
-            // remove code from url
-            history.replaceState({}, '', $window.location.origin + $window.location.pathname);
+            $http.get('/oauth/token', {params : {code : code}})
+                .success(function(data) {
+                    // save auth token
+                    $cookies.fs_token = data.access_token;
+                    // remove code from url
+                    history.replaceState({}, '', $window.location.origin + $window.location.pathname);
+                });
         }
     })();
 }
