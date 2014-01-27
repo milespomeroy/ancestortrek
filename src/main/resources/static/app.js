@@ -1,6 +1,20 @@
-angular.module('app', ['ngCookies']);
+var app = angular.module('app', ['ngCookies']);
 
-function Auth($cookies, $window, $http) {
+app.factory('FamilySearch', function($http) {
+    return {
+        user : function(token) {
+            return $http.get('https://sandbox.familysearch.org/platform/users/current',
+                {
+                    headers : {
+                        'Accept' : 'application/x-fs-v1+json',
+                        'Authorization' : 'Bearer ' + token
+                    }
+                });;
+        }
+    }
+});
+
+function Auth($cookies, $window, $http, FamilySearch) {
     this.hasToken = function() {
         return $cookies.fs_token ? true : false;
     };
@@ -33,4 +47,16 @@ function Auth($cookies, $window, $http) {
                 });
         }
     })();
+}
+
+function User($scope, $cookies, FamilySearch) {
+    $scope.user = {
+        fsUser : 'waiting for data'
+    };
+
+    if($cookies.fs_token) {
+        FamilySearch.user($cookies.fs_token).then(function(d) {
+            $scope.user.fsUser = d.data.users[0].contactName;
+        });
+    }
 }
